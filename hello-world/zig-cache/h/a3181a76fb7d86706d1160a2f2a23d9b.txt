@@ -1,0 +1,1 @@
+56116 3096224745365947 1674086959000000000 52f60689778b65d7c0e5a128c1da83e6 C:\ProgramData\chocolatey\lib\zig\tools\zig-windows-x86_64-0.10.1\lib\libc\mingw\lib-common\ntdll.def.in
