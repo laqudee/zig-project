@@ -144,3 +144,74 @@ test "array repeat3" {
     const n = "abcabc";
     try expect(arepb(*const [6:0]u8, m, n));
 }
+
+test "@Vector" {
+    const a = @Vector(4, i32){ 1, 2, 3, 4 };
+    try expect(a[2] == 3);
+    try expect(@sizeOf(@TypeOf(a)) == 16);
+    try expect(@sizeOf(@TypeOf(a[0])) == 4);
+}
+
+test "Vector add" {
+    var i = @Vector(4, i32){ 1, 2, 3, 4 };
+    const j = @Vector(4, i32){ 10, 20, 30, 40 };
+    var k = i + j;
+    try expect(k[2] == 33);
+    try expect(@TypeOf(k) == @Vector(4, i32));
+}
+
+test "vector @splat" {
+    const scalar: u32 = 5;
+    const r = @splat(4, scalar);
+    comptime try expect(@TypeOf(r) == @Vector(4, u32));
+    try expect(std.mem.eql(u32, &@as([4]u32, r), &[_]u32{ 5, 5, 5, 5 }));
+}
+
+test "intger vector reduce" {
+    var a = @Vector(4, u32){ 10, 15, 20, 25 };
+    const r = @reduce(.Add, a);
+    try expect(r == 70);
+}
+
+test "bool vector reduce" {
+    const a = @Vector(4, i32){ 1, -1, 1, -1 };
+    const b = a > @splat(4, @as(i32, 0));
+    // b is {true,false,true,false}
+    comptime try expect(@TypeOf(b) == @Vector(4, bool));
+    const r = @reduce(.And, b);
+    comptime try expect(@TypeOf(r) == bool);
+    try expect(r == false);
+}
+
+const v1 = @Vector(4, u8){ 1, 2, 3, 4 };
+const v2 = @Vector(4, u8){ 11, 12, 13, 14 };
+const mask = @Vector(4, bool){ true, false, true, false };
+test "@selct" {
+    const c = @select(u8, mask, v1, v2);
+    const c1 = @Vector(4, u8){ 1, 12, 3, 14 };
+    const rv = (c == c1);
+    const r = @reduce(.And, rv);
+    try expect(r);
+}
+
+test "vector @shuffle" {
+    const a = @Vector(7, u8){ 'o', 'l', 'h', 'e', 'r', 'z', 'w' };
+    const b = @Vector(4, u8){ 'w', 'd', '!', 'x' };
+    const mask1 = @Vector(5, i32){ 2, 3, 1, 1, 0 };
+    const res1: @Vector(5, u8) = @shuffle(u8, a, undefined, mask1);
+    try expect(std.mem.eql(u8, &@as([5]u8, res1), "hello"));
+    const mask2 = @Vector(6, i32){ -1, 0, 4, 1, -2, -3 };
+    const res2: @Vector(6, u8) = @shuffle(u8, a, b, mask2);
+    try expect(std.mem.eql(u8, &@as([6]u8, res2), "world!"));
+}
+
+test "assiggnment with slice" {
+    var a = [_]i32{ 1, 2, 3, 4 };
+    var vec: @Vector(2, i32) = a[0..2].*;
+    try expect(vec[1] == 2);
+    var s: []const i32 = &a;
+    var off: usize = 1;
+    var vecl: @Vector(2, i32) = s[off..][0..2].*;
+    try expect(vecl[0] == 2);
+    try expect(vecl[1] == 3);
+}
