@@ -1,0 +1,1 @@
+long FOO = __LONG_MAX__;
