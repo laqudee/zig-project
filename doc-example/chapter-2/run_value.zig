@@ -111,7 +111,7 @@ test "tuple" {
 
 test "inline for tuple" {
     const t = (.{ @as(u32, 1234), @as(f64, 12.34), true, "hi" });
-    inline for (t) |v, i| {
+    inline for (t, 0..) |v, i| {
         if (i != 2) continue;
         try expect(v);
     }
@@ -129,8 +129,8 @@ test "enum literal" {
 
 test "union literal" {
     const foo2 = union { i: i32, f: f64 };
-    const f1 = foo2 {.i = 15};
+    const f1 = foo2{ .i = 15 };
     try expect(f1.i == 15);
-    const f2: foo2 = .{.f=3.3};
+    const f2: foo2 = .{ .f = 3.3 };
     try expect(f2.f == 3.3);
 }
