@@ -161,10 +161,59 @@ const Timestamp = union(enum) {
   - `?`
   - `null`
 
+```zig
+var home: ?[]const u8 = null;
+var name: ?[]consdt u8 = "bob";
+
+std.debug.print("{s}\n", .{name.?});
+
+if (home) |h| {
+  // h is a []const u8
+} else {
+  // don't have a home value
+}
+
+const h = home orelse "unknow";
+
+const h = home orelse return;
+```
+
+- orelse 也可以带一个代码块，用于执行更复杂的逻辑
+
 - 未定义的值`Undefined`
+
+```zig
+var pseudo_uuid: [16]u8 = undefined;
+std.crypto.random.bytes(&pseudo_uuid);
+```
 
 - Error类型
   - `!`
   - try
+
+- 错误联合类型
+- 错误集
+- zig能创建隐式错误集
+
+- anyerror类型
+- 完全显式
+- 完全隐式
+- 隐式错误集
+- 推导错误联合类型
+- catch try
+- 返回错误联合类型的函数调用时，可以包含一个catch子句
+
+```zig
+const OpenError = error {
+  AccessDenied,
+  NotFound,
+}
+
+pub fn main() !void {
+  // return OpenError.NotFound;
+
+  return error.AccessDenied;
+}
+```
 
 - switch 逗号运算符
