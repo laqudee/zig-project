@@ -135,3 +135,59 @@ const User = struct {
   return user;
 }
 ```
+
+- zig核心原则之一：无隐藏内存分配
+- zig没有默认的分配器
+
+- `std.fmt.allocPrint`
+```zig
+  const say = std.fmt.allocPrint(allocator, "it's over {d}!!!", .{user.power});
+  defer alloccator.free(say);
+```
+
+- 注入分配器
+  - 显式
+  - 灵活
+
+- 通用分配器GeneralPurposeAllocator
+  - 通用的、线程安全的分配器
+  - 可作为应用程序的主分配器
+
+```zig
+const T - std.heap.GeneralPurposeAllocator(.{})
+var gpa = T{};
+
+// is the same  as
+var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+```
+
+- 动态数组ArrayList
+
+- `std.testing.alloator`
+
+- `@as`执行类型强制的内置函数
+
+- `ArenaAllocator`
+  - 通用分配器
+  - 接收一个子分配器
+
+- 解析器Parser
+
+- `var arena = std.heap.ArenaAllactor.init(allocator);`
+
+- `defer arena.deinit();`
+
+- 需要确保ArenaAllocator的deinit会在合理的内存增长范围内被调用
+
+- 固定缓冲区分配器FixedBufferAllocator
+  - `std.heap.FixedBufferAllocator`
+  - 从缓冲区[]u8中分配内存
+  - 使用的内存都是预先创建的，因此速度快
+  - 限制分配内存的数量
+  - free和destory只对最后分配/创建的项目有效
+  - 按照栈的方式进行内存分配和释放
+
+- 固定缓冲区分配器的常见模式是重置并重复使用
+- ArenaAllocator也是如此
+
+- 动态分配的另一个可行替代方案：将数据流传输到std.io.Writer
