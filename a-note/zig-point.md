@@ -191,3 +191,12 @@ var gpa = std.heap.GeneralPurposeAllocator(.{}){};
 - ArenaAllocator也是如此
 
 - 动态分配的另一个可行替代方案：将数据流传输到std.io.Writer
+
+- 泛型利用了zig强大的编译时元编程功能
+
+- `T`
+
+- `@This()`内置函数返回被调用时的最内层类型
+
+- `const Self = @This();`
+  - Self只是一个变量，它的值是一种类型，可以在使用List(T)地方用Self替换
