@@ -76,4 +76,62 @@ pub const User = struct {
 
 - 悬空指针
 
-- 数据的生命周期
+- ` 数据的生命周期 `
+
+- C 语言的malloc
+
+- 在堆中，可以在运行时创建大小已知的内存，并完全控制其生命周期
+  
+- 调用栈
+  - 优点：管理数据的方式简单且可预测（通过推送和弹出堆栈帧）
+  - 缺点：数据的lifetime与它在调用栈中的位置息息相关
+
+- 堆
+  - 优点：没有内置的生命周期，数据可长可短
+  - 缺点： 如果不手动释放内存，就会一直存在
+
+- 分配器是`std.mem.Allocator`类型
+  - alloc()
+  - free()
+  - 需要一个类型T和一个计数，成功后返回`[]T`切片
+  - 分配发生在运行时
+
+- 每次alloc，都会有相应的free
+- 可以在HTTP处理程序中分配内存，在后台线程中释放，这是代码中两个独立的部分
+
+- defer
+  - 在退出作用域时，执行给定的代码
+  - 【作用域退出】包括到达作用域的结尾或从作用域返回
+  - defer与分配器或内存管理器并无严格关系
+
+- defer将在其包含作用域的末尾运行
+- errdefer
+  - 只在返回错误时执行
+
+- 不能释放同一内存两次
+- 不能释放没有引用的内存
+
+- 双重释放是无效的
+
+- 申请的内存要及时销毁，否则会造成内存泄露
+
+- create
+- destory
+  - 用于创建单值
+- create返回指向该类型的指针或一个错误即 `!*T`
+
+```zig
+const User = struct {
+  id: u64,
+  power: i32,
+  
+  fn init(allocator: std.mem.Allocator, id: u64, power: i32) !*User {
+    var user = try allocator.create(User);
+    user.* = .{
+      .id = id,
+      .power = power,
+    };
+  }
+  return user;
+}
+```
