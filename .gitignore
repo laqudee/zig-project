@@ -4,3 +4,6 @@
 # *.o
 
 # zag
+
+zig-cache
+zig-out

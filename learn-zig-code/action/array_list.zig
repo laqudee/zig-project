@@ -1,7 +1,12 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
+const calc = @import("calc");
 
 pub fn main() !void {
+    // calc module use
+    const res = calc.add(1, 2);
+    std.debug.print("1 + 2 = {d}\n", .{res});
+
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     const allocator = gpa.allocator();
 
@@ -57,3 +62,7 @@ const User = struct {
         allocator.free(self.name);
     }
 };
+
+test "array list" {
+    try std.testing.expectEqual(true, true);
+}

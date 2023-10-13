@@ -24,3 +24,15 @@ while (it.next()) |kv| {
 
 - @TypeOf
   - 检查各种变量的类型
+
+## 构建系统
+
+- `build.zig`
+
+- `zig init-exe`
+- `zig init-lib`
+
+## 第三方依赖
+
+- 创建软件包
+- 使用软件包
