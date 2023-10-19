@@ -2,6 +2,15 @@
 
 > zig version 0.12.0-dev.800+a9b37ac63
 
+> 学习自 [C/C++/Zig 混合工程](http://docs.cardkit.cn/docs/zig/zig-1eutuc924icto)
+
+## 目的
+- 一个模块用c编写，一个模块用 Zig 编写，一个模块用 c++ 编写
+- 测量一段代码的运行时间，用微妙来计算，分辨率是纳秒
+- c做一个被测函数
+- zig做一个被测函数
+- 测量时间的函数用c++完成
+
 ## 初始化
 
 ```shell
