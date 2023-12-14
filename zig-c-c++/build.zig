@@ -13,7 +13,8 @@ pub fn build(b: *std.Build) void {
 
     exe.linkLibCpp();
     exe.addIncludePath(std.Build.LazyPath{ .path = "src/include" });
-    exe.addCSourceFiles(&.{ "src/sum/sum.c", "src/timeit/timeit.cpp" }, &[_][]const u8{});
+    exe.addCSourceFiles(.{ .dependency = null, .files = &.{ "src/sum/sum.c", "src/timeit/timeit.cpp" }, .flags = &.{} });
+    // exe.addCSourceFiles(&.{ "src/sum/sum.c", "src/timeit/timeit.cpp" }, &[_][]const u8{});
 
     b.installArtifact(exe);
 
